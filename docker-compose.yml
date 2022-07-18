@@ -1,0 +1,34 @@
+version: '3.8'
+
+#
+# Common clonecognition template for web and Celery services below
+#
+x-common-clonecognition:
+  &default-common-clonecognition
+  image: clonecognition
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      - "UID=${UID}"
+  restart: on-failure
+  env_file:
+    - .env
+  volumes:
+    - /home/ppp598/vizsciflow/storage:/home/clonecognition/storage
+  # networks:
+  #   - clonecognitionnetwork
+  # environment:
+  #   - FLASK_CONFIG=development
+
+services:
+  clonecognition:
+    <<: *default-common-clonecognition
+    command: sh -c "tail -F anything" # debug
+    # command: >
+    #   sh -c "/home/.venv/bin/gunicorn -b :5000 --access-logfile - --error-logfile - manage:app"
+    # depends_on:
+    #   - clonecognitiondb      
+    # ports:
+    #   - 5000:5000
+    container_name: clonecognition
